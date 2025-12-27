@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback} from "react";
+import { useEffect, useState, useCallback } from "react";
 import { api } from "../api";
 
 export default function AdminDashboard() {
@@ -6,28 +6,39 @@ export default function AdminDashboard() {
   const [form, setForm] = useState({ title: "", description: "" });
   const [thumbnailFile, setThumbnailFile] = useState(null);
   const [pdfFiles, setPdfFiles] = useState([]);
-  const [editingCourseId, setEditingCourseId] = useState(null); // For updates
+  const [editingCourseId, setEditingCourseId] = useState(null);
 
   const token = localStorage.getItem("token");
   const role = localStorage.getItem("role");
 
-  // Fetch courses
-    const fetchCourses = useCallback(async () => {
+  // =========================
+  // Fetch Courses
+  // =========================
+  const fetchCourses = useCallback(async () => {
+    if (!token) return;
+
     try {
       const res = await api.get("/courses", {
         headers: { Authorization: "Bearer " + token },
       });
       setCourses(res.data);
     } catch (err) {
-      console.error(err);
+      console.error("Fetch courses error:", err);
     }
   }, [token]);
 
+  // =========================
+  // Load courses for admin
+  // =========================
   useEffect(() => {
-    if (role === "admin") fetchCourses();
-  }, [role]);
+    if (role === "admin") {
+      fetchCourses();
+    }
+  }, [role, fetchCourses]);
 
+  // =========================
   // Add or Update Course
+  // =========================
   const handleSubmitCourse = async (e) => {
     e.preventDefault();
 
@@ -39,13 +50,11 @@ export default function AdminDashboard() {
 
     try {
       if (editingCourseId) {
-        // Update existing course
         await api.put(`/courses/${editingCourseId}`, fd, {
           headers: { Authorization: "Bearer " + token },
         });
         setEditingCourseId(null);
       } else {
-        // Add new course
         await api.post("/courses", fd, {
           headers: { Authorization: "Bearer " + token },
         });
@@ -56,23 +65,30 @@ export default function AdminDashboard() {
       setThumbnailFile(null);
       setPdfFiles([]);
 
-      // Refresh courses
+      // Refresh list
       fetchCourses();
     } catch (err) {
       console.error("Error adding/updating course:", err);
     }
   };
 
-  // Prepare editing course
+  // =========================
+  // Prepare editing
+  // =========================
   const handleEditCourse = (course) => {
     setEditingCourseId(course.id);
-    setForm({ title: course.title, description: course.description });
+    setForm({
+      title: course.title,
+      description: course.description,
+    });
     setThumbnailFile(null);
     setPdfFiles([]);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  // Delete course
+  // =========================
+  // Delete Course
+  // =========================
   const handleDelete = async (id) => {
     try {
       await api.delete(`/courses/${id}`, {
@@ -80,30 +96,43 @@ export default function AdminDashboard() {
       });
       fetchCourses();
     } catch (err) {
-      console.error(err);
+      console.error("Delete error:", err);
     }
   };
 
-  if (role !== "admin") return <h2 style={{ textAlign: "center" }}>Access Denied</h2>;
+  // =========================
+  // Access control
+  // =========================
+  if (role !== "admin") {
+    return <h2 style={{ textAlign: "center" }}>Access Denied</h2>;
+  }
 
+  // =========================
+  // UI
+  // =========================
   return (
     <div className="courses-page">
       <h2 className="courses-title">Admin Dashboard</h2>
 
-      {/* Add / Update Course Form */}
+      {/* Add / Update Course */}
       <div className="auth-box">
         <form onSubmit={handleSubmitCourse}>
           <input
             type="text"
             placeholder="Course Title"
             value={form.title}
-            onChange={(e) => setForm({ ...form, title: e.target.value })}
+            onChange={(e) =>
+              setForm({ ...form, title: e.target.value })
+            }
             required
           />
+
           <textarea
             placeholder="Course Description"
             value={form.description}
-            onChange={(e) => setForm({ ...form, description: e.target.value })}
+            onChange={(e) =>
+              setForm({ ...form, description: e.target.value })
+            }
             style={{
               width: "100%",
               padding: "12px",
@@ -114,26 +143,34 @@ export default function AdminDashboard() {
               color: "#fff",
             }}
           />
+
           <label>
             Course Thumbnail:
             <input
               type="file"
               accept="image/*"
-              onChange={(e) => setThumbnailFile(e.target.files[0])}
+              onChange={(e) =>
+                setThumbnailFile(e.target.files[0])
+              }
             />
           </label>
+
           <label>
             Course Files (PDF/DOCX):
             <input
               type="file"
               multiple
               accept=".pdf,.docx"
-              onChange={(e) => setPdfFiles([...e.target.files])}
+              onChange={(e) =>
+                setPdfFiles([...e.target.files])
+              }
             />
           </label>
+
           <button className="btn-primary" type="submit">
             {editingCourseId ? "Update Course" : "Add Course"}
           </button>
+
           {editingCourseId && (
             <button
               type="button"
@@ -163,21 +200,35 @@ export default function AdminDashboard() {
                 className="course-img"
               />
             )}
+
             <h3>{course.title}</h3>
             <p>{course.description}</p>
-            <button className="btn-outline" onClick={() => handleEditCourse(course)}>
+
+            <button
+              className="btn-outline"
+              onClick={() => handleEditCourse(course)}
+            >
               Edit
             </button>
-            <button className="btn-outline" onClick={() => handleDelete(course.id)}>
+
+            <button
+              className="btn-outline"
+              onClick={() => handleDelete(course.id)}
+            >
               Delete
             </button>
+
             <div className="pdf-list" style={{ marginTop: "10px" }}>
               {course.files?.map((f) => (
                 <a
                   key={f.id}
                   href={`http://localhost:8080/uploads/pdfs/${f.pdf_file}`}
                   download
-                  style={{ display: "block", color: "#60a5fa", marginTop: "5px" }}
+                  style={{
+                    display: "block",
+                    color: "#60a5fa",
+                    marginTop: "5px",
+                  }}
                 >
                   {f.pdf_file}
                 </a>

@@ -1,0 +1,339 @@
+/* =========================================================
+   GLOBAL
+========================================================= */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  height: 100%;
+}
+
+body {
+  font-family: "Inter", "Segoe UI", sans-serif;
+  background: radial-gradient(circle at top, #0f172a, #020617 70%);
+  color: #e5e7eb;
+  line-height: 1.6;
+}
+
+/* =========================================================
+   LAYOUT
+========================================================= */
+.app-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.main-content {
+  flex: 1;
+}
+
+/* =========================================================
+   NAVBAR
+========================================================= */
+.navbar {
+  background: rgba(2, 6, 23, 0.92);
+  backdrop-filter: blur(12px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 40px;
+  border-bottom: 1px solid rgba(59, 130, 246, 0.15);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.logo {
+  font-weight: 700;
+  font-size: 1.3rem;
+  color: #60a5fa;
+}
+
+.navbar a {
+  color: #e5e7eb;
+  margin-left: 20px;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.navbar a:hover {
+  color: #60a5fa;
+}
+
+/* =========================================================
+   BUTTONS
+========================================================= */
+.btn-primary {
+  background: linear-gradient(135deg, #1e40af, #3b82f6);
+  color: #ffffff;
+  padding: 12px 22px;
+  border-radius: 10px;
+  border: 1px solid rgba(59, 130, 246, 0.4);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s ease;
+  box-shadow: 0 8px 22px rgba(37, 99, 235, 0.35);
+}
+
+.btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 14px 36px rgba(37, 99, 235, 0.55);
+}
+
+.btn-outline {
+  background: transparent;
+  color: #e5e7eb;
+  padding: 12px 22px;
+  border-radius: 10px;
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-outline:hover {
+  background: rgba(59, 130, 246, 0.08);
+  border-color: rgba(59, 130, 246, 0.5);
+}
+
+/* =========================================================
+   HERO
+========================================================= */
+.hero {
+  min-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 40px 20px;
+}
+
+.hero-title {
+  font-size: 3rem;
+  font-weight: 800;
+}
+
+.hero-title span {
+  color: #0ea5e9;
+}
+
+.hero-subtitle {
+  max-width: 650px;
+  color: #9ca3af;
+  margin: 15px 0 30px;
+}
+
+.hero-buttons {
+  display: flex;
+  gap: 15px;
+}
+
+/* =========================================================
+   AUTH
+========================================================= */
+.auth-box {
+  max-width: 420px;
+  margin: 100px auto;
+  background: rgba(2, 6, 23, 0.9);
+  padding: 34px;
+  border-radius: 18px;
+  border: 1px solid rgba(59, 130, 246, 0.15);
+  box-shadow: 0 25px 60px rgba(2, 6, 23, 0.9);
+  text-align: center;
+}
+
+.auth-box h2 {
+  margin-bottom: 20px;
+}
+
+.auth-box input {
+  width: 100%;
+  margin: 12px 0;
+  padding: 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(59, 130, 246, 0.2);
+  background: #020617;
+  color: white;
+}
+
+/* =========================================================
+   COURSES PAGE
+========================================================= */
+.courses-page {
+  padding: 60px 40px;
+}
+
+.courses-title {
+  font-size: 2.2rem;
+  margin-bottom: 12px;
+}
+
+.search-bar {
+  width: 300px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: #020617;
+  border: 1px solid rgba(59, 130, 246, 0.35);
+  color: white;
+  margin-bottom: 35px;
+}
+
+/* ---------- PRODUCT CARD GRID ---------- */
+.course-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 20px;
+}
+
+/* ---------- SMALL PRODUCT COURSE CARD ---------- */
+.course-card {
+  background: #020617;
+  border-radius: 14px;
+  padding: 14px;
+  border: 1px solid rgba(59, 130, 246, 0.15);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+  transition: 0.2s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.course-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(59, 130, 246, 0.35);
+}
+
+.course-img {
+  height: 130px;
+  border-radius: 10px;
+  object-fit: cover;
+  margin-bottom: 10px;
+}
+
+.course-card h3 {
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.course-card p {
+  font-size: 0.82rem;
+  color: #94a3b8;
+  flex-grow: 1;
+}
+
+.course-card .btn-primary {
+  margin-top: 10px;
+  padding: 9px;
+  font-size: 0.8rem;
+}
+
+/* =========================================================
+   COURSE DETAILS (PRODUCT PAGE)
+========================================================= */
+.course-details-container {
+  max-width: 900px;
+  margin: 50px auto;
+  padding: 0 20px;
+}
+
+.back-btn {
+  margin-bottom: 20px;
+}
+
+.course-details-card {
+  display: flex;
+  gap: 30px;
+  background: #020617;
+  border-radius: 18px;
+  padding: 24px;
+  border: 1px solid rgba(59, 130, 246, 0.15);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+}
+
+.course-details-img {
+  width: 300px;
+  height: 200px;
+  border-radius: 14px;
+  object-fit: cover;
+}
+
+.course-details-info h1 {
+  font-size: 1.8rem;
+  margin-bottom: 10px;
+}
+
+.course-details-info p {
+  color: #94a3b8;
+}
+
+/* ---------- MATERIALS ---------- */
+.materials-title {
+  margin: 40px 0 15px;
+}
+
+.pdf-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.pdf-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #020617;
+  padding: 14px 18px;
+  border-radius: 12px;
+  border: 1px solid rgba(59, 130, 246, 0.15);
+}
+
+.btn-download {
+  padding: 8px 14px;
+  font-size: 0.8rem;
+}
+
+/* =========================================================
+   FOOTER
+========================================================= */
+.footer {
+  background: #020617;
+  color: #94a3b8;
+  text-align: center;
+  padding: 20px;
+  border-top: 1px solid rgba(59, 130, 246, 0.15);
+}
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+@media (max-width: 768px) {
+  .navbar {
+    padding: 15px 20px;
+  }
+
+  .hero-title {
+    font-size: 2.2rem;
+  }
+
+  .search-bar {
+    width: 100%;
+  }
+
+  .courses-page {
+    padding: 40px 20px;
+  }
+
+  .course-details-card {
+    flex-direction: column;
+  }
+
+  .course-details-img {
+    width: 100%;
+    height: 180px;
+  }
+}

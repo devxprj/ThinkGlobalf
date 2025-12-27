@@ -1,0 +1,10 @@
+/* Centers only the signup/login form */
+.signup-wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh; /* full viewport height */
+  background: radial-gradient(circle at top, #0f172a, #020617 70%);
+  gap: 15px; /* space between form and back button */
+}

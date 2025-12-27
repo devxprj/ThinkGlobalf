@@ -1,29 +1,36 @@
 // server.js
 import express from "express";
-import mysql from "mysql2";
 import cors from "cors";
 import multer from "multer";
 import path from "path";
 import fs from "fs";
 import { fileURLToPath } from "url";
+import { db } from "./db.js"; // ← Use Railway DB
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
-const port = process.env.PORT ||8080;
+const port = process.env.PORT || 8080;
 
-// Create upload folders if they don't exist
+// =====================
+// Create upload folders
+// =====================
 const uploadDirs = ["uploads/thumbnails", "uploads/pdfs"];
 uploadDirs.forEach((dir) => {
   const fullPath = path.join(__dirname, dir);
   if (!fs.existsSync(fullPath)) fs.mkdirSync(fullPath, { recursive: true });
 });
 
+// =====================
+// Middleware
+// =====================
 app.use(cors());
 app.use(express.json());
 
-// --- Multer setup ---
+// =====================
+// Multer setup
+// =====================
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     if (file.mimetype.includes("image")) cb(null, "uploads/thumbnails");
@@ -35,25 +42,24 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
-// --- Serve uploads ---
+// =====================
+// Serve uploads
+// =====================
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
-// --- MySQL connection ---
-const db = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: "",
-  database: "lms",
+// =====================
+// Test DB connection
+// =====================
+app.get("/test-db", (req, res) => {
+  db.query("SELECT 1", (err, result) => {
+    if (err) return res.status(500).json({ error: "DB connection failed", details: err });
+    res.json({ success: true });
+  });
 });
 
-db.connect((err) => {
-  if (err) console.error("MySQL connection failed:", err);
-  else console.log("MySQL connected successfully");
-});
-
-// --- ROUTES ---
-
+// =====================
 // SIGNUP
+// =====================
 app.post("/signup", (req, res) => {
   const { name, email, password } = req.body;
 
@@ -62,8 +68,7 @@ app.post("/signup", (req, res) => {
 
   db.query("SELECT * FROM users WHERE email=?", [email], (err, users) => {
     if (err) return res.status(500).json(err);
-    if (users.length > 0)
-      return res.status(400).json({ message: "Email already exists" });
+    if (users.length > 0) return res.status(400).json({ message: "Email already exists" });
 
     db.query(
       "INSERT INTO users (name, email, password) VALUES (?, ?, ?)",
@@ -76,7 +81,9 @@ app.post("/signup", (req, res) => {
   });
 });
 
+// =====================
 // LOGIN
+// =====================
 app.post("/login", (req, res) => {
   const { email, password } = req.body;
 
@@ -93,7 +100,9 @@ app.post("/login", (req, res) => {
   );
 });
 
-// Get all courses
+// =====================
+// GET COURSES
+// =====================
 app.get("/courses", (req, res) => {
   db.query("SELECT * FROM courses ORDER BY id DESC", (err, courses) => {
     if (err) return res.status(500).json(err);
@@ -117,7 +126,9 @@ app.get("/courses", (req, res) => {
   });
 });
 
-// Add new course
+// =====================
+// ADD COURSE
+// =====================
 app.post(
   "/courses",
   upload.fields([
@@ -154,7 +165,9 @@ app.post(
   }
 );
 
-// Update course
+// =====================
+// UPDATE COURSE
+// =====================
 app.put(
   "/courses/:id",
   upload.fields([
@@ -181,10 +194,14 @@ app.put(
       if (err) return res.status(500).json(err);
 
       if (pdfFiles.length > 0) {
-        db.query("INSERT INTO course_files (course_id, pdf_file) VALUES ?", [pdfFiles], (err2) => {
-          if (err2) return res.status(500).json(err2);
-          res.json({ message: "Course updated successfully" });
-        });
+        db.query(
+          "INSERT INTO course_files (course_id, pdf_file) VALUES ?",
+          [pdfFiles],
+          (err2) => {
+            if (err2) return res.status(500).json(err2);
+            res.json({ message: "Course updated successfully" });
+          }
+        );
       } else {
         res.json({ message: "Course updated successfully" });
       }
@@ -192,7 +209,9 @@ app.put(
   }
 );
 
-// Delete course
+// =====================
+// DELETE COURSE
+// =====================
 app.delete("/courses/:id", (req, res) => {
   const { id } = req.params;
 
@@ -206,7 +225,9 @@ app.delete("/courses/:id", (req, res) => {
   });
 });
 
-// Start server
+// =====================
+// START SERVER
+// =====================
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
 });

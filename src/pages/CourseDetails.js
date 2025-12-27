@@ -10,7 +10,7 @@ export default function CourseDetails() {
   useEffect(() => {
     api.get("/courses")
       .then(res => {
-        const selected = res.data.find(c => c.id == id);
+        const selected = res.data.find(c => c.id === id);
         setCourse(selected);
       })
       .catch(err => console.error(err));

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback} from "react";
 import { api } from "../api";
 
 export default function AdminDashboard() {
@@ -12,7 +12,7 @@ export default function AdminDashboard() {
   const role = localStorage.getItem("role");
 
   // Fetch courses
-  const fetchCourses = async () => {
+    const fetchCourses = useCallback(async () => {
     try {
       const res = await api.get("/courses", {
         headers: { Authorization: "Bearer " + token },
@@ -21,7 +21,7 @@ export default function AdminDashboard() {
     } catch (err) {
       console.error(err);
     }
-  };
+  }, [token]);
 
   useEffect(() => {
     if (role === "admin") fetchCourses();
